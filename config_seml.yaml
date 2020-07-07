@@ -1,0 +1,62 @@
+seml:
+  name: pprgo
+  executable: run_seml.py
+  output_dir: '~/slurm_out'
+  project_root_dir: .
+
+slurm:
+  experiments_per_job: 1
+  sbatch_options:
+    gres: 'gpu:"GeForce GTX 1080 Ti":1'
+    mem: 32G           # memory
+    cpus-per-task: 5   # num cores
+    time: 1-00:00      # max time, D-HH:MM
+    partition: [gpu_all]
+
+fixed:
+  data_dir: /nfs/shared/data/
+  ntrain_div_classes: 20
+  attr_normalization: None
+  topk: 32
+  ppr_normalization: 'sym'
+  hidden_size: 32
+  nlayers: 2
+  weight_decay: 1e-4
+  dropout: 0.1
+  lr: 5e-3
+  max_epochs: 200
+  batch_size: 512
+  batch_mult_val: 4
+  eval_step: 1
+  run_val: False
+  early_stop: False
+  patience: 50
+  nprop_inference: 2
+  inf_fraction: 1.0
+
+grid:
+  split_seed:
+    type: 'range'
+    min: 0
+    max: 5
+    step: 1
+  eps:
+    type: choice
+    options: [1e-2, 1e-4]
+
+reddit:
+  fixed:
+    alpha: 0.5
+    data_fname: 'reddit.npz'
+
+remaining:
+  fixed:
+    alpha: 0.25
+  grid:
+    data_fname:
+      type: choice
+      options:
+        - 'cora_full.npz'
+        - 'pubmed.npz'
+        - 'mag_large_filtered_06_09_coarse_standardized.npz'
+        # - 'mag_large_filtered_06_09_fine_standardized.npz'
