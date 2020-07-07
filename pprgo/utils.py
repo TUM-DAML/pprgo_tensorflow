@@ -136,7 +136,10 @@ def get_data(dataset_path, seed, ntrain_div_classes, normalize_attr=None):
         attr_matrix = g.attr_matrix
 
     # helper that speeds up row indexing
-    attr_matrix = SparseRowIndexer(attr_matrix)
+    if sp.issparse(attr_matrix):
+        attr_matrix = SparseRowIndexer(attr_matrix)
+    else:
+        attr_matrix = attr_matrix
 
     # split the data into train/val/test
     num_classes = g.labels.max() + 1
