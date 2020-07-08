@@ -7,10 +7,10 @@ by Aleksandar Bojchevski*, Johannes Klicpera*, Bryan Perozzi, Amol Kapoor, Marti
 Published at ACM SIGKDD 2020.
 
 ## Demonstration
-To see for yourself how fast PPRGo is we've set up a [Google Colab notebook](https://colab.research.google.com/drive/1aRJI8-AwHOHdVQkAsD0ELIu3eof09An8?usp=sharing).
+To see for yourself how fast PPRGo runs even on a large dataset we've set up a [Google Colab notebook](https://colab.research.google.com/drive/1aRJI8-AwHOHdVQkAsD0ELIu3eof09An8?usp=sharing), which trains and generates predictions for the Reddit dataset, as described in the paper.
 
 ## Installation
-You can then install the repository using `pip install -e .`. However, installing the requirements regularly will result in TensorFlow using the wrong CUDA version, since CUDA 10.0 contains a bug that affects PPRGo. This is why we recommend importing the Anaconda environment saved in `environment.yaml`, which provides the correct TensorFlow and CUDA versions.
+You can install the repository using `pip install -e .`. However, installing the requirements like this will result in TensorFlow using CUDA 10.0, which contains a bug that affects PPRGo. We recommend importing the Anaconda environment saved in `environment.yaml` instead, which provides the correct TensorFlow and CUDA versions.
 
 ## Run the code
 This repository contains a demo notebook for running training and inference (`demo.ipynb`) and a script for running the model on a cluster with [SEML](https://github.com/TUM-DAML/seml) (`run_seml.py`).
