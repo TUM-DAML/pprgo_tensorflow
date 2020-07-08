@@ -94,15 +94,14 @@ def run(data_dir, data_fname, split_seed, ntrain_div_classes, attr_normalization
             ntrain_div_classes=ntrain_div_classes,
             normalize_attr=attr_normalization
     )
-    time_loading = time.time() - start
-
     try:
         d = attr_matrix.n_columns
     except AttributeError:
         d = attr_matrix.shape[1]
     nc = labels.max() + 1
+    time_loading = time.time() - start
 
-    # compute the ppr vectors for train/val nodes using Anderson
+    # compute the ppr vectors for train/val nodes using ACL's ApproximatePR
     start = time.time()
     topk_train = ppr.topk_ppr_matrix(adj_matrix, alpha, eps, train_idx, topk,
                                      normalization=ppr_normalization)

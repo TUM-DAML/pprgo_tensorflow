@@ -10,7 +10,7 @@ Published at ACM SIGKDD 2020.
 We recommend importing the Anaconda environment saved in `environment.yaml`, which provides the correct TensorFlow and CUDA versions. You can then install the repository using `python setup.py develop`. Note that installing the requirements regularly will most likely result in the wrong CUDA version, since CUDA 10.0 contains a bug that affects PPRGo.
 
 ## Run the code
-This repository contains a notebook for running training and inference (`run.ipynb`) and a script for running it on a cluster with [SEML](https://github.com/TUM-DAML/seml) (`run_seml.py`).
+This repository contains a demo notebook for running training and inference (`demo.ipynb`) and a script for running the model on a cluster with [SEML](https://github.com/TUM-DAML/seml) (`run_seml.py`).
 
 ## Contact
 Please contact a.bojchevski@in.tum.de or klicpera@in.tum.de if you have any questions.
