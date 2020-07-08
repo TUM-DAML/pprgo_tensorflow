@@ -6,8 +6,11 @@ This repository provides the reference implementation of PPRGo for a single mach
 by Aleksandar Bojchevski*, Johannes Klicpera*, Bryan Perozzi, Amol Kapoor, Martin Blais, Benedek Rózemberczki, Michal Lukasik, Stephan Günnemann 
 Published at ACM SIGKDD 2020.
 
+## Demonstration
+To see for yourself how fast PPRGo is we've set up a [Google Colab notebook](https://colab.research.google.com/drive/1aRJI8-AwHOHdVQkAsD0ELIu3eof09An8?usp=sharing).
+
 ## Installation
-We recommend importing the Anaconda environment saved in `environment.yaml`, which provides the correct TensorFlow and CUDA versions. You can then install the repository using `python setup.py develop`. Note that installing the requirements regularly will most likely result in the wrong CUDA version, since CUDA 10.0 contains a bug that affects PPRGo.
+You can then install the repository using `pip install -e .`. However, installing the requirements regularly will result in TensorFlow using the wrong CUDA version, since CUDA 10.0 contains a bug that affects PPRGo. This is why we recommend importing the Anaconda environment saved in `environment.yaml`, which provides the correct TensorFlow and CUDA versions.
 
 ## Run the code
 This repository contains a demo notebook for running training and inference (`demo.ipynb`) and a script for running the model on a cluster with [SEML](https://github.com/TUM-DAML/seml) (`run_seml.py`).
