@@ -3,7 +3,7 @@
 This repository provides the reference implementation of PPRGo for a single machine in TensorFlow 1. PPRGo is a fast GNN able to scale to massive graphs in both single-machine and distributed setups. It was proposed in our paper
 
 **[Scaling Graph Neural Networks with Approximate PageRank](https://www.daml.in.tum.de/pprgo)**   
-by Aleksandar Bojchevski, Johannes Klicpera, Bryan Perozzi, Amol Kapoor, Martin Blais, Benedek Rózemberczki, Michal Lukasik, Stephan Günnemann 
+by Aleksandar Bojchevski*, Johannes Klicpera*, Bryan Perozzi, Amol Kapoor, Martin Blais, Benedek Rózemberczki, Michal Lukasik, Stephan Günnemann 
 Published at ACM SIGKDD 2020.
 
 ## Installation
