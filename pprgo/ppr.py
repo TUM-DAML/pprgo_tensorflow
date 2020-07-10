@@ -1,7 +1,6 @@
 import numba
 import numpy as np
 import scipy.sparse as sp
-from joblib import delayed
 
 
 @numba.njit(cache=True, locals={'_val': numba.float32, 'res': numba.float32, 'res_vnode': numba.float32})

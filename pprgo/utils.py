@@ -1,7 +1,6 @@
 import resource
 import numpy as np
 import scipy.sparse as sp
-import numba
 import sklearn
 
 from .sparsegraph import SparseGraph

@@ -3,7 +3,7 @@ import time
 import logging
 import numpy as np
 import tensorflow as tf
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, f1_score
 from sacred import Experiment
 import seml
 

@@ -1,12 +1,9 @@
-from collections import defaultdict
 import time
 import logging
-
+import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
-
 import tensorflow.compat.v1 as tf
 
-import numpy as np
 from .utils import sparse_feeder
 from .tf_utils import mixed_dropout
 
