@@ -11,9 +11,6 @@ from .tf_utils import mixed_dropout
 class PPRGo:
     def __init__(self, d, nc, hidden_size, nlayers, lr,
                  weight_decay, dropout, sparse_features=True):
-        tf.reset_default_graph()
-        tf.set_random_seed(0)
-
         self.nc = nc
         self.sparse_features = sparse_features
 
@@ -140,15 +137,19 @@ class PPRGo:
                 for i, var in enumerate(tf.trainable_variables())]
         sess.run(set_all)
 
+
 def train(sess, model, attr_matrix, train_idx, val_idx, topk_train, topk_val, labels,
           max_epochs=200, batch_size=512, batch_mult_val=4,
-          eval_step=1, run_val=False, early_stop=False, patience=50, ex=None):
+          eval_step=1, early_stop=False, patience=50, ex=None):
     step = 0
     best_loss = np.inf
 
     loss_hist = {'train': [], 'val': []}
     acc_hist = {'train': [], 'val': []}
     f1_hist = {'train': [], 'val': []}
+    if ex is not None:
+        ex.current_run.info['train'] = {'loss': [], 'acc': []}
+        ex.current_run.info['val'] = {'loss': [], 'acc': []}
 
     for epoch in range(max_epochs):
         for i in range(0, len(train_idx), batch_size):
@@ -157,53 +158,55 @@ def train(sess, model, attr_matrix, train_idx, val_idx, topk_train, topk_val, la
                                               labels[train_idx[i:i + batch_size]],
                                               key=i)
 
-            _, _train_loss, preds = sess.run([model.update_op, model.loss,
-                                              model.preds],
+            _, train_loss, preds = sess.run([model.update_op, model.loss, model.preds],
                                              feed_train)
 
-            train_acc = accuracy_score(labels[train_idx[i:i + batch_size]],
-                                       preds)
-            train_f1 = f1_score(labels[train_idx[i:i + batch_size]],
-                                preds, average='macro')
             step += 1
-
             if step % eval_step == 0:
+
                 # update train stats
-                if not run_val:
-                    logging.info(f"Epoch {epoch}, step {step}: train {_train_loss:.5f}")
-                loss_hist['train'].append(_train_loss)
+                train_acc = accuracy_score(labels[train_idx[i:i + batch_size]], preds)
+                train_f1 = f1_score(labels[train_idx[i:i + batch_size]], preds, average='macro')
+
+                loss_hist['train'].append(train_loss)
                 acc_hist['train'].append(train_acc)
                 f1_hist['train'].append(train_f1)
-            if run_val and step % eval_step == 0:
-                # update val stats
-                rnd_val = np.random.permutation(len(val_idx))[:batch_mult_val*batch_size]
-                feed_val = model.feed_for_batch(attr_matrix, topk_val[rnd_val],
-                                                labels[val_idx[rnd_val]])
-                _val_loss, preds = sess.run([model.loss, model.preds],
-                                            feed_val)
-
-                val_acc = accuracy_score(labels[val_idx[rnd_val]], preds)
-                val_f1 = f1_score(labels[val_idx[rnd_val]], preds, average='macro')
-
-
-                loss_hist['val'].append(_val_loss)
-                acc_hist['val'].append(val_acc)
-                f1_hist['val'].append(val_f1)
-
                 if ex is not None:
-                    ex.current_run.info['train']['loss'].append(_train_loss)
-                    ex.current_run.info['val']['loss'].append(_val_loss)
+                    ex.current_run.info['train']['loss'].append(train_loss)
+                    ex.current_run.info['train']['acc'].append(train_acc)
+                    ex.current_run.info['train']['f1'].append(train_f1)
 
-                logging.info(f"Epoch {epoch}, step {step}: train {_train_loss:.5f}, val {_val_loss:.5f}")
+                if topk_val is not None:
 
-                if _val_loss < best_loss:
-                    best_loss = _val_loss
-                    best_epoch = epoch
-                    best_trainables = model.get_vars(sess)
-                # early stop only if this variable is set to True
-                elif early_stop and epoch >= best_epoch + patience:
-                    model.set_vars(sess, best_trainables)
-                    return epoch + 1, loss_hist, acc_hist, f1_hist
-    if run_val:
+                    # update val stats
+                    rnd_val = np.random.permutation(len(val_idx))[:batch_mult_val*batch_size]
+                    feed_val = model.feed_for_batch(attr_matrix, topk_val[rnd_val],
+                                                    labels[val_idx[rnd_val]])
+                    val_loss, preds = sess.run([model.loss, model.preds], feed_val)
+
+                    val_acc = accuracy_score(labels[val_idx[rnd_val]], preds)
+                    val_f1 = f1_score(labels[val_idx[rnd_val]], preds, average='macro')
+
+                    loss_hist['val'].append(val_loss)
+                    acc_hist['val'].append(val_acc)
+                    f1_hist['val'].append(val_f1)
+                    if ex is not None:
+                        ex.current_run.info['val']['loss'].append(val_loss)
+                        ex.current_run.info['val']['acc'].append(val_acc)
+                        ex.current_run.info['val']['f1'].append(val_f1)
+
+                    logging.info(f"Epoch {epoch}, step {step}: train {train_loss:.5f}, val {val_loss:.5f}")
+
+                    if val_loss < best_loss:
+                        best_loss = val_loss
+                        best_epoch = epoch
+                        best_trainables = model.get_vars(sess)
+                    # early stop only if this variable is set to True
+                    elif early_stop and epoch >= best_epoch + patience:
+                        model.set_vars(sess, best_trainables)
+                        return epoch + 1, loss_hist, acc_hist, f1_hist
+                else:
+                    logging.info(f"Epoch {epoch}, step {step}: train {train_loss:.5f}")
+    if topk_val is not None:
         model.set_vars(sess, best_trainables)
     return epoch + 1, loss_hist, acc_hist, f1_hist

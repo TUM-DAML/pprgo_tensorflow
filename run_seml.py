@@ -114,6 +114,9 @@ def run(data_dir, data_fname, split_seed, ntrain_div_classes, attr_normalization
     logging.info('Preprocessing done.')
 
     start = time.time()
+    tf.reset_default_graph()
+    tf.set_random_seed(0)
+
     model = pprgo.PPRGo(d, nc, hidden_size, nlayers, lr, weight_decay, dropout,
                         sparse_features=type(attr_matrix) is not np.ndarray)
 
