@@ -100,6 +100,7 @@ def run(data_dir, data_fname, split_seed, ntrain_div_classes, attr_normalization
         d = attr_matrix.shape[1]
     nc = labels.max() + 1
     time_loading = time.time() - start
+    logging.info('Loading done.')
 
     # compute the ppr vectors for train/val nodes using ACL's ApproximatePR
     start = time.time()
@@ -129,8 +130,7 @@ def run(data_dir, data_fname, split_seed, ntrain_div_classes, attr_normalization
                 topk_train=topk_train, topk_val=topk_val,
                 labels=labels,
                 max_epochs=max_epochs, batch_size=batch_size, batch_mult_val=batch_mult_val,
-                eval_step=eval_step, run_val=run_val,
-                early_stop=early_stop, patience=patience,
+                eval_step=eval_step, early_stop=early_stop, patience=patience,
                 ex=ex)
     time_training = time.time() - start
     logging.info('Training done.')

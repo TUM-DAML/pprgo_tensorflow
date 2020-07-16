@@ -3,7 +3,7 @@ import numpy as np
 import scipy.sparse as sp
 import sklearn
 
-from .sparsegraph import SparseGraph
+from .sparsegraph import load_from_npz
 
 
 def sparse_feeder(M):
@@ -54,28 +54,6 @@ class SparseRowIndexer:
         shape = [indptr.shape[0] - 1, self.n_columns]
 
         return sp.csr_matrix((data, indices, indptr), shape=shape)
-
-
-def load_from_npz(file_name: str) -> SparseGraph:
-    """Load a SparseGraph from a Numpy binary file.
-
-    Parameters
-    ----------
-    file_name
-        Name of the file to load.
-
-    Returns
-    -------
-    SparseGraph
-        Graph in sparse matrix format.
-
-    """
-    with np.load(file_name, allow_pickle=True) as loader:
-        loader = dict(loader)
-        if 'type' in loader:
-            del loader['type']
-        dataset = SparseGraph.from_flat_dict(loader)
-    return dataset
 
 
 def split_random(seed, n, n_train, n_val):

@@ -541,3 +541,25 @@ def largest_connected_components(sparse_graph: 'SparseGraph', n_components: int 
     # TODO: add warnings / logging
     # print("Selecting {0} largest connected components".format(n_components))
     return create_subgraph(sparse_graph, nodes_to_keep=nodes_to_keep)
+
+
+def load_from_npz(file_name: str) -> SparseGraph:
+    """Load a SparseGraph from a Numpy binary file.
+
+    Parameters
+    ----------
+    file_name
+        Name of the file to load.
+
+    Returns
+    -------
+    SparseGraph
+        Graph in sparse matrix format.
+
+    """
+    with np.load(file_name, allow_pickle=True) as loader:
+        loader = dict(loader)
+        if 'type' in loader:
+            del loader['type']
+        dataset = SparseGraph.from_flat_dict(loader)
+    return dataset
